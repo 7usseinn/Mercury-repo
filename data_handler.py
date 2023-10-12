@@ -5,9 +5,9 @@ import error_handler
 def read_file(file_path):
     try:
 
-        if file_path.endswith('.csv'):
+        if file_path.endswith(lookups.FileHandling.CSV.value):
            return pd.read_csv(file_path)
-        if file_path.endswith('.xlsx'):
+        if file_path.endswith(lookups.FileHandling.XLSX.value):
             return pd.read_excel(file_path)
     
         
