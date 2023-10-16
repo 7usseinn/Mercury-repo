@@ -9,3 +9,4 @@ class ErrorHandling(Enum):
 class FileHandling(Enum):
     CSV = '.csv'
     XLSX = '.xlsx'
+    JSON = '.json'
