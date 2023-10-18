@@ -7,6 +7,13 @@ class ErrorHandling(Enum):
 
 
 class FileHandling(Enum):
-    CSV = '.csv'
-    XLSX = '.xlsx'
-    JSON = '.json'
+    CSV = 'csv'
+    XLSX = 'xlsx'
+    JSON = 'json'
+    API = 'api'
+
+
+class HandledType(Enum):
+    TIMESTAMP = "timestamp"
+    STRING = "string"
+    LIST = "list"
