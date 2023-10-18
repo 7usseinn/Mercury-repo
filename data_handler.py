@@ -72,3 +72,24 @@ def return_sql_file(conn, file_path):
     with open(file_path, 'r') as file:
         sql_query = file.read()
         return return_query(conn, sql_query)
+    
+
+
+
+def return_create_statement_from_df(dataframe, schema_name, table_name):
+    type_mapping = {
+        'int64':'INT',
+        'float64':'FLOAT',
+        'object':'TEXT',
+        'datetime64[ns]':'TIMESTAMP'
+    }
+    fields = []
+    for column, dtype in dataframe.dtypes.items():
+        sql_type = type_mapping.get(str(dtype), 'TEXT')
+        fields.append(f"{column} {sql_type}")
+   
+    create_table_statement = f"CREATE TABLE IF NOT EXISTS {schema_name.value}.{table_name} ( \n"
+    create_table_statement += "ID SERIAL PRIMARY KEY,\n"
+    create_table_statement += ',\n'.join(fields)
+    create_table_statement += ");"
+    return create_table_statement
