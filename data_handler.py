@@ -4,77 +4,43 @@ import error_handler
 from database_handler import connect_to_db
 import json
 import requests
+import database_handler
 
-def return_data_as_dataframe(file_path, file_type, conn):
+def return_data_as_dataframe(file_path, file_type, conn=None):
+    df = None
     try:
 
-        if file_type == lookups.FileHandling.CSV.value:
+        if file_type == lookups.FileHandling.CSV:
            df = pd.read_csv(file_path)
-        elif file_type == lookups.FileHandling.XLSX.value:
+        elif file_type == lookups.FileHandling.XLSX:
              df = pd.read_excel(file_path)
-        elif file_type == lookups.FileHandling.JSON.value:
+        elif file_type == lookups.FileHandling.JSON:
           with open(file_path, 'r') as json_file:
             df = json.load(json_file)
-        elif file_type == lookups.FileHandling.API.value:        
+        elif file_type == lookups.FileHandling.API:        
             response = requests.get(file_path)
             if response.status_code == 200:
                df = response.json()
-           
+        elif file_type == lookups.FileHandling.SQL:
+             query = return_sql_file(file_path)
+             df = pd.read_sql(query,conn)
     except Exception as error:
         prefix = lookups.ErrorHandling.Data_handler_error.value
         suffix = str(error)
-        error_handler.print_error(suffix,prefix)
+        level = lookups.ErrorLevel.ERROR.value
+        message = 'Error happenend'
+        error_handler.print_error(suffix,prefix,level,message)
         return None
-    
-
-def return_data_as_object(file_path, file_type, config_file):
-    try:
-
-        if file_type == lookups.FileHandling.CSV.value:
-           data = pd.read_csv(file_path)
-           return data.to_csv(index=False)
-        elif file_type == lookups.FileHandling.XLSX.value:
-             data = pd.read_excel(file_path)
-             return data.to_csv(index=False)
-        elif file_type == lookups.FileHandling.JSON.value:
-          with open(file_path, 'r') as json_file:
-             data = json.load(json_file)
-          return json.dumps(data)
-        elif file_type == lookups.FileHandling.API.value:        
-            response = requests.get(file_path)
-            if response.status_code == 200:
-               data = response.json()
-               return json.dumps(data)
-           
-    except Exception as error:
-        prefix = lookups.ErrorHandling.Data_handler_error.value
-        suffix = str(error)
-        error_handler.print_error(suffix,prefix)
-        return None
-    
-    
-
-def return_query(conn, query):
-    try:
-        with conn.cursor() as cur:
-            cur.execute(query)
-            result = pd.DataFrame(cur.fetchall(), columns=[desc[0] for desc in cur.description])
-            return result
-    except Exception as error:
-        prefix = lookups.ErrorHandling.Excute_query_error.value
-        suffix = str(error)
-        error_handler.print_error(suffix,prefix)
-        return None
-
+    finally:
+        return df
 
     
-def return_sql_file(conn, file_path):
+
+def return_sql_file(file_path):
     with open(file_path, 'r') as file:
         sql_query = file.read()
-        return return_query(conn, sql_query)
+        return sql_query 
     
-
-
 
 def return_create_statement_from_df(dataframe, schema_name, table_name):
     type_mapping = {
@@ -93,3 +59,24 @@ def return_create_statement_from_df(dataframe, schema_name, table_name):
     create_table_statement += ',\n'.join(fields)
     create_table_statement += ");"
     return create_table_statement
+
+
+def return_insert_statement(dataframe, table_name, schema):
+ columns = ','.join(dataframe.columns)
+ for index, row in dataframe.iterrows():
+    values_list = []
+    for val in row.values:
+        val_type = str(type(val))
+        if val_type == lookups.HandledType.TIMESTAMP.value:
+            values_list.append(str(val))
+        elif val_type == lookups.HandledType.STRING.value:
+            values_list.append(f"'{val}'")
+        elif val_type == lookups.HandledType.LIST.value:
+            val_item = ';'.join(val)
+            values_list.append(f"'{val_item}'")
+        else:
+            values_list.append(str(val))
+ 
+    values = ', '.join(values_list)
+    insert_statement = f"INSERT INTO {schema}.{table_name} ({columns}) VALUES ({values});"
+ return insert_statement

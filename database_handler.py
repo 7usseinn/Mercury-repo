@@ -19,7 +19,9 @@ def connect_to_db(config_file):
     except Exception as error:
         prefix = lookups.ErrorHandling.DB_CONNECTION_ERROR.value
         suffix = str(error)
-        error_handler.print_error(suffix, prefix)
+        level = lookups.ErrorLevel.ERROR.value
+        message = 'Error happenend'
+        error_handler.print_error(suffix, prefix,level,message)
     finally:
         return db_session
     
@@ -32,9 +34,6 @@ def execute_query(conn, query):
     except Exception as error:
         prefix = lookups.ErrorHandling.Excute_query_error.value
         suffix = str(error)
-        error_handler.print_error(suffix,prefix)
-
-def execute_sql_file(conn, file_path):
-    with open(file_path, 'r') as file:
-        sql_query = file.read()
-        return execute_query(conn, sql_query)
+        level = lookups.ErrorLevel.ERROR.value
+        message = 'Error happenend'
+        error_handler.print_error(suffix, prefix,level,message)
