@@ -10,7 +10,7 @@ def return_data_as_dataframe(file_path, file_type, conn=None):
     df = None
     try:
 
-        if file_type == lookups.FileHandling.CSV:
+        if file_type == lookups.FileHandling.CSV.value:
            df = pd.read_csv(file_path)
         elif file_type == lookups.FileHandling.XLSX:
              df = pd.read_excel(file_path)
@@ -62,21 +62,28 @@ def return_create_statement_from_df(dataframe, schema_name, table_name):
 
 
 def return_insert_statement(dataframe, table_name, schema):
- columns = ','.join(dataframe.columns)
- for index, row in dataframe.iterrows():
-    values_list = []
-    for val in row.values:
-        val_type = str(type(val))
-        if val_type == lookups.HandledType.TIMESTAMP.value:
-            values_list.append(str(val))
-        elif val_type == lookups.HandledType.STRING.value:
-            values_list.append(f"'{val}'")
-        elif val_type == lookups.HandledType.LIST.value:
-            val_item = ';'.join(val)
-            values_list.append(f"'{val_item}'")
-        else:
-            values_list.append(str(val))
- 
-    values = ', '.join(values_list)
-    insert_statement = f"INSERT INTO {schema}.{table_name} ({columns}) VALUES ({values});"
- return insert_statement
+    columns = ','.join(dataframe.columns)
+    insert_statements = []
+
+    for index, row in dataframe.iterrows():
+        values_list = []
+
+        for val in row.values:
+            val_type = str(type(val))
+
+            if val_type == lookups.HandledType.TIMESTAMP.value:
+                values_list.append(str(val))
+            elif val_type == lookups.HandledType.STRING.value:
+                values_list.append(f"'{val}'")
+            elif val_type == lookups.HandledType.LIST.value:
+                val_item = ';'.join(val)
+                values_list.append(f"'{val_item}'")
+            else:
+                values_list.append(str(val))
+
+        values = ', '.join(values_list)
+        insert_statement = f"INSERT INTO {schema}.{table_name} ({columns}) VALUES ({values});"
+        insert_statements.append(insert_statement)
+
+    return insert_statements
+

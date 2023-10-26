@@ -19,6 +19,6 @@ class FileHandling(Enum):
     SQL = 'sql'
 
 class HandledType(Enum):
-    TIMESTAMP = "timestamp"
-    STRING = "string"
-    LIST = "list"
+    TIMESTAMP = 'timestamp'
+    STRING = str
+    LIST = list
