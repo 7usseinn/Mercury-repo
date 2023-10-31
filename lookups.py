@@ -20,5 +20,5 @@ class FileHandling(Enum):
 
 class HandledType(Enum):
     TIMESTAMP = 'timestamp'
-    STRING = str
-    LIST = list
+    STRING = "<class 'str'>"
+    LIST = 'list'
