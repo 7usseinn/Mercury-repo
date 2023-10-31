@@ -67,10 +67,8 @@ def return_insert_statement(dataframe, table_name, schema):
 
     for index, row in dataframe.iterrows():
         values_list = []
-
         for val in row.values:
             val_type = str(type(val))
-
             if val_type == lookups.HandledType.TIMESTAMP.value:
                 values_list.append(str(val))
             elif val_type == lookups.HandledType.STRING.value:
