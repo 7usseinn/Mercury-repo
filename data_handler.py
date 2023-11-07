@@ -85,3 +85,21 @@ def return_insert_statement(dataframe, table_name, schema):
 
     return insert_statements
 
+def create_staging_table(df, schema_name, table_name):
+    
+ data_type = {
+    'Step': [0], 
+    'Type': [''],
+    'Amount': [0.0],
+    'nameOrig': [''],
+    'oldBalanceOrig': [0.0],
+    'nameDest': [''],
+    'oldBalanceDest': [0.0],
+    'newBalanceDest': [0.0],
+    'isFraud': [0],
+    'isFlaggedFraud': [0]
+ }
+
+ df = pd.DataFrame(data_type)
+ create_statement = return_create_statement_from_df(df, schema_name, table_name)
+ return create_statement
