@@ -88,16 +88,28 @@ def return_insert_statement(dataframe, table_name, schema):
 def create_staging_table(df, schema_name, table_name):
     
  data_type = {
-    'Step': [0], 
-    'Type': [''],
-    'Amount': [0.0],
-    'nameOrig': [''],
-    'oldBalanceOrig': [0.0],
-    'nameDest': [''],
-    'oldBalanceDest': [0.0],
-    'newBalanceDest': [0.0],
-    'isFraud': [0],
-    'isFlaggedFraud': [0]
+    'trans_date_trans_time': [''],
+    'cc_num':[0.0],
+    'merchant': [''],
+    'category': [''],
+    'amt': [0.0],
+    'first': [''],
+    'last': [''],
+    'gender': [''],
+    'street': [''],
+    'city': [''],
+    'state': [''],
+    'zip': [0],
+    'lat':[0.0],
+    'long':[0.0],
+    'city_pop':[0],
+    'job':[''],
+    'dob':[''],
+    'trans_num':[''],
+    'unix_time':[0],
+    'merch_lat':[0.0],
+    'merch_long':[0.0],
+    'is_fraud':[0]
  }
 
  df = pd.DataFrame(data_type)
