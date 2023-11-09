@@ -24,3 +24,7 @@ CREATE Table IF not EXISTS bank_schema.fct_fraud
     merch_long double precision,
     is_fraud integer
 );
+
+INSERT INTO bank_schema.fct_fraud (trans_date_trans_time, cc_num, merchant, category,amt, first, last, gender, street, city,state, zip, city_pop, job,dob,trans_num,unix_time,merch_lat,merch_long,is_fraud)
+SELECT * FROM bank_schema.stg_kaggle_fraud
+ON CONFLICT (trans_num) DO NOTHING; 

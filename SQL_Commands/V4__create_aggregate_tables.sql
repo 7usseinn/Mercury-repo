@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS bank_schema.agg_time_daily
     PRIMARY KEY (trans_date)
 );
 
+TRUNCATE TABLE bank_schema.agg_time_daily;
+
 INSERT INTO bank_schema.agg_time_daily (trans_date, total_transactions, total_amount, average_amount, fraud_transactions, fraud_amount)
 SELECT
     CAST(trans_date_trans_time AS DATE) AS trans_date,
@@ -33,6 +35,8 @@ CREATE TABLE IF NOT EXISTS bank_schema.agg_customer
     fraud_amount double precision,
     PRIMARY KEY (cc_num)
 );
+
+TRUNCATE TABLE bank_schema.agg_customer;
 
 INSERT INTO bank_schema.agg_customer (cc_num, total_transactions, total_amount, average_amount, fraud_transactions, fraud_amount)
 SELECT
@@ -59,6 +63,8 @@ CREATE TABLE IF NOT EXISTS bank_schema.agg_merchant
     PRIMARY KEY (merchant)
 );
 
+TRUNCATE TABLE bank_schema.agg_merchant;
+
 INSERT INTO bank_schema.agg_merchant (merchant, total_transactions, total_amount, average_amount, fraud_transactions, fraud_amount)
 SELECT
     merchant,
@@ -83,6 +89,8 @@ CREATE TABLE IF NOT EXISTS bank_schema.agg_state
     fraud_amount double precision,
     PRIMARY KEY (state)
 );
+
+TRUNCATE TABLE bank_schema.agg_state;
 
 INSERT INTO bank_schema.agg_state (state, total_transactions, total_amount, average_amount, fraud_transactions, fraud_amount)
 SELECT
