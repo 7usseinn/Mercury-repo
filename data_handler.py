@@ -5,6 +5,7 @@ from database_handler import connect_to_db
 import json
 import requests
 import database_handler
+from datetime import datetime
 
 def return_data_as_dataframe(file_path, file_type, conn=None):
     df = None
@@ -84,6 +85,17 @@ def return_insert_statement(dataframe, table_name, schema):
         insert_statements.append(insert_statement)
 
     return insert_statements
+
+
+def return_insert_statement_for_watermark(timestamp_str, table_name, schema):
+     
+    timestamp = datetime.strptime(timestamp_str, '%d/%m/%Y %H:%M')
+    insert_statement = f"INSERT INTO {schema}.{table_name} (etl_last_execution_time) VALUES ('{timestamp}') RETURNING id;"
+
+    return insert_statement
+
+
+
 
 def create_staging_table(df, schema_name, table_name):
     
