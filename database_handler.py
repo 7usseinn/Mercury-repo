@@ -3,8 +3,9 @@ import lookups
 import error_handler
 import json
 
-def connect_to_db(config_file):
+def connect_to_db():
     db_session = None
+    config_file = 'config.json'
     try:
         with open(config_file, 'r') as file:
             config = json.load(file)
@@ -37,3 +38,13 @@ def execute_query(conn, query):
         level = lookups.ErrorLevel.ERROR.value
         message = 'Error happenend'
         error_handler.print_error(suffix, prefix,level,message)
+
+
+
+def close_connection(db_session):
+    try:
+        if db_session is not None:
+            db_session.close()
+            print("Database connection closed successfully")
+    except Exception as error:
+        print(str(error))

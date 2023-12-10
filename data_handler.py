@@ -127,3 +127,18 @@ def create_staging_table(df, schema_name, table_name):
  df = pd.DataFrame(data_type)
  create_statement = return_create_statement_from_df(df, schema_name, table_name)
  return create_statement
+
+
+def get_last_execution_time(db_session):
+    cursor = db_session.cursor()
+    cursor.execute(f"SELECT etl_last_execution_time FROM bank_schema.etl_watermark ORDER BY id DESC LIMIT 1;")
+    last_execution_time = cursor.fetchone()[0]
+    cursor.close()
+    return last_execution_time
+
+
+def return_truncate_statement(schema_name,table_name):
+    query = f"""
+      TRUNCATE TABLE {schema_name}.{table_name};
+     """
+    return query
